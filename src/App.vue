@@ -8,24 +8,23 @@
   </div>
 </template>
 
+<style lang="sass">
+  
+  @import "@/styles.sass"
+
+</style>
+
 <style lang="sass" scoped>
 
-  *
-    box-sizing: border-box
-
-  #app
-    font-family: Avenir, Helvetica, Arial, sans-serif
-    text-align: center
-    
   .navigation
     display: flex
     justify-content: space-between
     align-items: center
-    margin-bottom: 1.25rem
+    margin-bottom: 1rem
     padding: 0.75rem
     height: 4rem
     border-radius: 10px
-    background-color: #1e1d2f
+    background-color: $backgr_dark
 
     a
       display: flex
@@ -33,14 +32,14 @@
       height: 100%
       padding: 0 0.875rem
       border-radius: 5px
-      background-color: #27283c
+      background-color: $backgr_medium
       box-shadow: 2px 2px 8px rgba(0,0,0,0.3), inset 2px 2px 3px rgba(106,107,127,0.1)
       text-decoration: none
-      color: #ccc
+      color: $font_color_main
       text-shadow: 1px 1px 2px rgba(204,204,204,0.3)
 
     a:hover
-      background-color: #393a52
+      background-color: $backgr_light
       box-shadow: 3px 3px 8px rgba(255,255,255,.1)
 
     a:active

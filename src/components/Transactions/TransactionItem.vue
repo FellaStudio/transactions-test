@@ -1,14 +1,14 @@
 <template>
   <div class="transaction">
-    <div :class="['transaction__summary', { 'active' : showDetail, 'hovered' : isHovered }]" @click="onToggleShow()" @mouseenter="shadowHovered" @mouseleave="shadowDefault">
+    <div :class="['transaction__summary', { 'activated' : showDetail }]" @click="onToggleShow()">
       <div class="icon">
-        <img :class="{ 'opened' : showDetail }" :src="sourceImage" />
+        <img :src="sourceImage" />
       </div>
-      <div class="transaction__summary__field">
+      <div class="summary-field">
         <div class="type">{{ transactionType }}: <b>{{transaction.event_id}}</b></div>
         <div class="date">{{ transactionTime }}</div>
       </div>
-      <div :class="['transaction__summary__field', { 'positive' : (transactionType === 'Возврат'), 'negative' : (transactionType !== 'Возврат' && transactionAmount !== 'Без суммы') } ]">
+      <div :class="['summary-field', { 'positive' : (transactionType === 'Возврат'), 'negative' : (transactionType !== 'Возврат' && transactionAmount !== 'Без суммы') } ]">
         <div class="amount">{{ transactionAmount }}</div>
       </div>
     </div>
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+
+import { getFormattedTime } from '@/formatDate.js';
 
 export default {
   name: 'Transactions',
@@ -31,7 +33,6 @@ export default {
   data() {
     return {
       showDetail: false,
-      isHovered: false,
       transactionDate: '',
       transactionType: '',
     }
@@ -41,10 +42,8 @@ export default {
     this.formatDate(this.transaction.created_at);
   },
   computed: {
-    transactionTime() {
-      const transactionDateHours = this.transactionDate.getHours() < 10 ? `0${this.transactionDate.getHours()}` : this.transactionDate.getHours();
-      const transactionDateMinutes = this.transactionDate.getMinutes() < 10 ? `0${this.transactionDate.getMinutes()}` : this.transactionDate.getMinutes();
-      return `${transactionDateHours}:${transactionDateMinutes}`;
+    transactionTime() {     
+      return getFormattedTime(this.transaction.created_at);
     },
     sourceImage() {
       if (this.transactionType === "Счёт") {
@@ -85,26 +84,12 @@ export default {
     onToggleShow() {
       this.showDetail = !this.showDetail;
     },
-    shadowHovered() {
-      this.isHovered = true;
-    },
-    shadowDefault() {
-      this.isHovered = false;
-    },
   }
 };
-  
+
 </script>
 
 <style lang="sass" scoped>
-
-  @charset "UTF-8"
-
-  *
-    box-sizing: border-box
-    margin: 0
-    text-align: center
-    line-height: 1.5em
 
   img
     width: 42px
@@ -117,7 +102,7 @@ export default {
     align-items: center
     width: 100%
     height: auto
-    margin-bottom: 15px
+    margin-bottom: 1em
     border-radius: 6px
     box-shadow: 2px 2px 8px rgba(0,0,0,0.3)
 
@@ -125,39 +110,43 @@ export default {
       display: flex
       align-items: center
       width: 100%
-      height: 70px
-      padding-right: 20px
-      padding-left: 10px
+      height: 4.5rem
+      padding-right: 1.25em
+      padding-left: 0.625em
       border-radius: 6px
-      background-color: #27283c
-      color: #ccc
+      background-color: $backgr_medium
+      color: $font_color_main
       cursor: pointer
 
-      &__field
+      .summary-field
         display: flex
         flex-direction: column
         justify-content: center
         align-items: flex-start
         height: 100%
-        margin-left: 10px 
+        margin-left: 0.625em
 
-      &__field:last-child
+      .summary-field:last-child
         width: 100%
         align-items: flex-end
 
-    .positive
-      color: #39b27c
-    
-      .amount:before
-        content: '+'
+      .positive
+        color: $font_color_positive
 
-    .negative
-      color: #d87822
+        .amount:before
+          content: '+'
 
-      .amount:before
-        content: '-'
+      .negative
+        color: $font_color_negative
 
-    .active
+        .amount:before
+          content: '-'
+
+    &__summary:hover
+      background-color: $backgr_light
+      box-shadow: 3px 3px 8px rgba(255,255,255,.1)
+
+    .activated
       border-radius: 6px 6px 0 0
 
     &__detail
@@ -165,10 +154,13 @@ export default {
       align-items: center
       width: 100%
       border-radius: 0 0 6px 6px
-      background-color: #ccc
-      color: #212121
+      background-color: $backgr_grey
+      color: $font_color_submain
       transition: 0.3s cubic-bezier(.1,.65,.55,.95)
       overflow: hidden
+
+  .transaction:last-child
+    margin-bottom: 0.5em
 
   .invisible
     height: 0
@@ -178,29 +170,43 @@ export default {
     height: 50px
     border-top: none
 
-  .hovered
-    background-color: #393a52
-    box-shadow: 3px 3px 8px rgba(255,255,255,.1)
-
   .icon
     display: flex
     justify-content: center
     align-items: center
     width: 70px
-    height: 70px
+    height: 100%
 
   .type
     white-space: nowrap
 
-  .date
-    align-items: top
-
   .amount
-    width: 100%
     text-align: right
-    font-size: 1.125rem
+    font-size: 1.1rem
 
   .description
-    padding-left: 10px
+    padding-left: 0.75em
+
+  @media screen and (max-width: 1199px)
+    img
+      width: 36px
+      height: 36px
+
+    .transaction__summary
+      height: 4.375rem
+
+    .icon
+      width: 55px
+
+  @media screen and (max-width: 575px)
+    img
+      width: 30px
+      height: 30px
+
+    .transaction__summary
+      height: 4.25rem
+
+    .icon
+      width: 40px
 
 </style>
