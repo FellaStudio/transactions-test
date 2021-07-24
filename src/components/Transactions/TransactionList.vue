@@ -1,6 +1,10 @@
 <template>
   <div class="transaction-list">
-    <transaction-group v-for="group in groups" :key="group.date" :transactions="transactions" :group="group" />
+    <transaction-group
+      v-for="group in groups"
+      :key="group.date"
+      :transactions="transactions"
+      :group="group" />
   </div>
 </template>
 
@@ -25,7 +29,7 @@ export default {
   },
   created() {
     getTransactions()
-      .then(fetchData => { 
+      .then(fetchData => {
         this.transactions = fetchData.result;
         this.setGroups();
       });
@@ -37,9 +41,9 @@ export default {
         let newIndex = this.groups.findIndex(group => group.date === newDate);
         if (newIndex === -1) {
           let newGroupName;
-          if (newDate === getTodayDate) {
+          if (newDate === getTodayDate()) {
             newGroupName = 'Сегодня';
-          } else if (newDate === getYesterdayDate) {
+          } else if (newDate === getYesterdayDate()) {
             newGroupName = 'Вчера';
           } else {
             newGroupName = newDate;
@@ -50,7 +54,7 @@ export default {
     },
   },
 };
-  
+
 </script>
 
 <style lang="sass" scoped>
@@ -58,13 +62,10 @@ export default {
   .transaction-list
     display: flex
     flex-direction: column
-    align-items: center
-    width: 100%
-    min-height: calc(98vh - 5rem)
-    height: auto
+    height: calc(98vh - 5em)
     padding: 1.125em
     border-radius: 10px
     background-color: $backgr_dark
-    overflow: auto
+    overflow-y: auto
 
 </style>

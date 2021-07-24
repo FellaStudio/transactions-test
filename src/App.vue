@@ -16,13 +16,17 @@
 
 <style lang="sass" scoped>
 
+  #app
+    overflow: hidden
+    height: 98vh
+
   .navigation
     display: flex
     justify-content: space-between
     align-items: center
-    margin-bottom: 1rem
-    padding: 0.75rem
-    height: 4rem
+    margin-bottom: 1em
+    padding: 0.75em
+    height: 4em
     border-radius: 10px
     background-color: $backgr_dark
 

@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import MainPage from '@/components/MainPage.vue';
-import TransactionList from '@/components/Transactions/TransactionList.vue';
 
 Vue.use(VueRouter)
 
@@ -14,7 +13,7 @@ const routes = [
   {
     path: '/transactions',
     name: 'Transactions',
-    component: TransactionList,
+    component: () => import('@/components/Transactions/TransactionList.vue'),
   },
 ]
 

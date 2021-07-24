@@ -1,9 +1,12 @@
 <template>
   <div class="transaction-group">
     <div class="title">
-      <h2>{{group.name}}</h2>
+      <h2>{{ group.name }}</h2>
     </div>
-    <transaction-item v-for="transaction in filteredTransactions" :key="transaction.public_id" :transaction="transaction" />
+    <transaction-item
+      v-for="transaction in filteredTransactions"
+      :key="transaction.public_id"
+      :transaction="transaction" />
   </div>
 </template>
 
@@ -42,19 +45,20 @@ export default {
   .transaction-group
     display: flex
     flex-direction: column
-    align-items: center
     width: 100%
     height: auto
+    margin-bottom: 0.5em
     border-radius: 5px
     background-color: $backgr_dark
-    overflow: auto
 
     .title
       display: flex
       align-items: center
-      align-self: flex-start
-      height: 2rem
-      padding: 0.25em 0.5em
+      height: 2em
+      padding: 0 0.5em
       color: $font_color_smooth
+
+  .transaction-group:last-child
+    margin-bottom: 0
 
 </style>

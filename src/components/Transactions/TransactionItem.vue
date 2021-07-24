@@ -5,7 +5,7 @@
         <img :src="sourceImage" />
       </div>
       <div class="summary-field">
-        <div class="type">{{ transactionType }}: <b>{{transaction.event_id}}</b></div>
+        <div class="type">{{ transactionType }}: <b>{{ transaction.event_id }}</b></div>
         <div class="date">{{ transactionTime }}</div>
       </div>
       <div :class="['summary-field', { 'positive' : (transactionType === 'Возврат'), 'negative' : (transactionType !== 'Возврат' && transactionAmount !== 'Без суммы') } ]">
@@ -33,18 +33,9 @@ export default {
   data() {
     return {
       showDetail: false,
-      transactionDate: '',
-      transactionType: '',
     }
   },
-  created() {
-    this.setTransactionType(this.transaction.event_name);
-    this.formatDate(this.transaction.created_at);
-  },
   computed: {
-    transactionTime() {     
-      return getFormattedTime(this.transaction.created_at);
-    },
     sourceImage() {
       if (this.transactionType === "Счёт") {
         return require('@/assets/icons/bill.png');
@@ -56,11 +47,36 @@ export default {
         return require('@/assets/icons/unknown_operation.png');
       }
     },
+    transactionType() {
+      const eventName = this.transaction.event_name;
+      if (eventName === 'BILL_CREATION') {
+        return "Счёт";
+      } else if (eventName === 'NEW_TRANSACTION') {
+        return "Перевод";
+      } else if (eventName === 'REFUND') {
+        return "Возврат";
+      } else {
+        return "Транзакция";
+      }
+    },
+    transactionTime() {
+      return getFormattedTime(this.transaction.created_at);
+    },
     transactionAmount() {
       if (this.transaction.amount) {
-        return `${this.transaction.amount} ${this.transaction.currency}`;
+        return `${this.transaction.amount} ${this.amountCurrency}`;
       } else {
         return 'Без суммы';
+      }
+    },
+    amountCurrency() {
+      const currency = this.transaction.currency;
+      if (currency === "RUB") {
+        return "₽";
+      } else if (currency === "USD") {
+        return "$";
+      } else {
+        return currency;
       }
     },
     transactionDescription() {
@@ -68,23 +84,10 @@ export default {
     },
   },
   methods: {
-    formatDate(transactionDate) {
-      this.transactionDate = new Date(transactionDate);
-      console.log(this.transactionDate);
-    },
-    setTransactionType(eventName) {
-      if (eventName === 'BILL_CREATION') {
-        this.transactionType = "Счёт";
-      } else if (eventName === 'NEW_TRANSACTION') {
-        this.transactionType = "Перевод";
-      } else if (eventName === 'REFUND') {
-        this.transactionType = "Возврат";
-      }
-    },
     onToggleShow() {
       this.showDetail = !this.showDetail;
     },
-  }
+  },
 };
 
 </script>
@@ -95,12 +98,8 @@ export default {
     width: 42px
     height: 42px
     user-select: none
-  
+
   .transaction
-    display: flex
-    flex-direction: column
-    align-items: center
-    width: 100%
     height: auto
     margin-bottom: 1em
     border-radius: 6px
@@ -110,7 +109,7 @@ export default {
       display: flex
       align-items: center
       width: 100%
-      height: 4.5rem
+      height: 4.5em
       padding-right: 1.25em
       padding-left: 0.625em
       border-radius: 6px
@@ -122,13 +121,11 @@ export default {
         display: flex
         flex-direction: column
         justify-content: center
-        align-items: flex-start
         height: 100%
-        margin-left: 0.625em
+        margin-left: 0.5em
 
       .summary-field:last-child
         width: 100%
-        align-items: flex-end
 
       .positive
         color: $font_color_positive
@@ -152,7 +149,6 @@ export default {
     &__detail
       display: flex
       align-items: center
-      width: 100%
       border-radius: 0 0 6px 6px
       background-color: $backgr_grey
       color: $font_color_submain
@@ -160,21 +156,22 @@ export default {
       overflow: hidden
 
   .transaction:last-child
-    margin-bottom: 0.5em
+    margin-bottom: 0
 
   .invisible
     height: 0
     border: none
 
   .visible
-    height: 50px
+    height: 3em
     border-top: none
 
   .icon
     display: flex
     justify-content: center
     align-items: center
-    width: 70px
+    min-width: 55px
+    max-width: 55px
     height: 100%
 
   .type
@@ -188,25 +185,23 @@ export default {
     padding-left: 0.75em
 
   @media screen and (max-width: 1199px)
+
     img
       width: 36px
       height: 36px
 
-    .transaction__summary
-      height: 4.375rem
-
     .icon
-      width: 55px
+      min-width: 50px
+      max-width: 50px
 
   @media screen and (max-width: 575px)
+
     img
       width: 30px
       height: 30px
 
-    .transaction__summary
-      height: 4.25rem
-
     .icon
-      width: 40px
+      min-width: 42px
+      max-width: 42px
 
 </style>
